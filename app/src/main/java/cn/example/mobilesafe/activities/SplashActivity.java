@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,7 +13,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,12 +50,15 @@ public class SplashActivity extends Activity {
     private TextView tvVersion;
     private TextView tvProgress;
     private ProgressBar pb;
+    private RelativeLayout rlRoot;
 
     //服务器返回的信息
     String mVersionName;//版本名
     int mVersionCode;//版本号
     String mDescription;//版本描述
     String mDownloadUrl;//新版本下载地址
+
+    private SharedPreferences mPref;
 
     private Handler mHandler = new Handler(){
         public void handleMessage(Message msg){
@@ -89,8 +95,21 @@ public class SplashActivity extends Activity {
         tvVersion.setText("版本名：" + getLocalVersionName());
         tvProgress = (TextView) findViewById(R.id.tv_Progress);
         pb = (ProgressBar) findViewById(R.id.pb);
+        rlRoot = (RelativeLayout) findViewById(R.id.rl_root);
 
-        checkVersion();
+        //判断是否需要自动更新
+        mPref = getSharedPreferences("config", MODE_PRIVATE);
+        boolean autoUpdate = mPref.getBoolean("auto_update", true);
+        if(autoUpdate) {
+            checkVersion();
+        }else{
+            mHandler.sendEmptyMessageDelayed(CODE_ENTER_HOME, 2000);
+        }
+
+        //闪屏页设置渐变动画
+        AlphaAnimation anmi = new AlphaAnimation(0.3f, 1f);
+        anmi.setDuration(2000);
+        rlRoot.startAnimation(anmi);
     }
 
     /**

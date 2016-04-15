@@ -23,6 +23,30 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" >
         </activity>
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/title_activity_setting" >
+        </activity>
+        <activity
+            android:name=".LostFindActivity"
+            android:label="@string/title_activity_lost_find" >
+        </activity>
+        <activity
+            android:name=".Setup1Activity"
+            android:label="@string/title_activity_setup1" >
+        </activity>
+        <activity
+            android:name=".Setup2Activity"
+            android:label="@string/title_activity_setup2" >
+        </activity>
+        <activity
+            android:name=".Setup3Activity"
+            android:label="@string/title_activity_setup3" >
+        </activity>
+        <activity
+            android:name=".Setup4Activity"
+            android:label="@string/title_activity_setup4" >
+        </activity>
     </application>
 
 </manifest>
