@@ -49,6 +49,10 @@ public class HomeActivity extends Activity {
                     case 0:
                         showPasswordDialog();
                         break;
+                    case 1:
+                        Intent intent = new Intent("wang");
+                        sendBroadcast(intent);
+                        break;
                     case 8:
                         startActivity(new Intent(HomeActivity.this, SettingActivity.class));
                         break;
