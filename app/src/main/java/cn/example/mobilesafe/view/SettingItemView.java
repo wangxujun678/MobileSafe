@@ -10,7 +10,7 @@ import android.widget.TextView;
 import cn.example.mobilesafe.activities.R;
 
 /**
- * 这是设置页面中自定义的每个选项的view
+ * 这是设置页面中自定义的checkbox选项的view
  */
 public class SettingItemView extends RelativeLayout{
 

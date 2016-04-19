@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
 
     <application
         android:allowBackup="true"
@@ -39,11 +41,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name="cn.example.mobilesafe.receiver.SmsReceiver" >
-            <intent-filter android:priority="2147483647">
+            <intent-filter android:priority="2147483647" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-                <!--这个action在sdk中没有，在源代码里-->
+                <!-- 这个action在sdk中没有，在源代码里 -->
             </intent-filter>
         </receiver>
 
@@ -51,7 +52,25 @@
             android:name=".ContactsActivity"
             android:label="@string/title_activity_contacts" >
         </activity>
-        <service android:name="cn.example.mobilesafe.service.LocationService"></service>
+
+        <service android:name="cn.example.mobilesafe.service.LocationService" />
+
+        <activity
+            android:name=".AToolsActivity"
+            android:label="@string/title_activity_atools" >
+        </activity>
+        <activity
+            android:name=".AddressActivity"
+            android:label="@string/title_activity_address" >
+        </activity>
+
+        <service android:name="cn.example.mobilesafe.service.AddressService" >
+        </service>
+
+        <activity
+            android:name=".DragViewActivity"
+            android:label="@string/title_activity_drag_view" >
+        </activity>
     </application>
 
 </manifest>
