@@ -10,6 +10,8 @@ import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -23,8 +25,14 @@ public class AddressService extends Service {
     TelephonyManager tm;
     MyListener listener;
     BroadcastReceiver receiver;
+
     WindowManager mWM;
+    private WindowManager.LayoutParams params;
     View view;
+    private int startX;
+    private int startY;
+    private int winWidth;
+    private int winHeight;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -97,27 +105,84 @@ public class AddressService extends Service {
     private void showToast(String text) {
         mWM = (WindowManager) getSystemService(WINDOW_SERVICE);//获取窗口管理器
 
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        // 获取屏幕宽高
+        winWidth = mWM.getDefaultDisplay().getWidth();
+        winHeight = mWM.getDefaultDisplay().getHeight();
+
+        params = new WindowManager.LayoutParams();
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         params.format = PixelFormat.TRANSLUCENT;
-        params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        params.type = WindowManager.LayoutParams.TYPE_PHONE;// 电话窗口。它用于电话交互（特别是呼入）。它置于所有应用程序之上，状态栏之下。
+        params.gravity = Gravity.LEFT + Gravity.TOP;// 将重心位置设置为左上方,
+        // 也就是(0,0)从左上方开始,而不是默认的中心位置
+        // 设置浮窗的位置, 基于左上方的偏移量
+        params.x = mPref.getInt("lastX", 0);
+        params.y = mPref.getInt("lastY", 0);
 
         view = View.inflate(this, R.layout.toast_address, null);
 
         int[] bgs = new int[]{R.drawable.call_locate_white,
                 R.drawable.call_locate_orange, R.drawable.call_locate_blue,
                 R.drawable.call_locate_gray, R.drawable.call_locate_green};
-        int style = mPref.getInt("address_style",0);
+        int style = mPref.getInt("address_style", 0);
         view.setBackgroundResource(bgs[style]);// 根据存储的样式更新背景
 
         TextView tvText = (TextView) view.findViewById(R.id.tv_number);
         tvText.setText(text);
 
         mWM.addView(view, params);//在窗口中显示自定义控件需要两个元素：View和WindowManager.LayoutParams
-                                  //可以在任意应用中显示，类似于Toast
+        //可以在任意应用中显示，类似于Toast
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // 初始化起点坐标
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        int endX = (int) event.getRawX();
+                        int endY = (int) event.getRawY();
+                        //计算偏移量
+                        int dX = endX - startX;
+                        int dY = endY - startY;
+
+                        // 更新浮窗位置
+                        params.x += dX;
+                        params.y += dY;
+
+                        // 防止坐标偏离屏幕
+                        if (params.x < 0) {
+                            params.x = 0;
+                        }
+                        if (params.y < 0) {
+                            params.y = 0;
+                        }
+                        if (params.x > winWidth-view.getWidth()) {
+                            params.x = winWidth-view.getWidth();
+                        }
+                        if (params.y > winHeight-view.getHeight()) {
+                            params.y = winHeight-view.getHeight();
+                        }
+
+                        mWM.updateViewLayout(view, params);
+
+                        // 重新初始化起点坐标
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mPref.edit().putInt("lastX", startX).commit();
+                        mPref.edit().putInt("lastY", startY).commit();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 }
