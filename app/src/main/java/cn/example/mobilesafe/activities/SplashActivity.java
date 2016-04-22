@@ -309,7 +309,7 @@ public class SplashActivity extends Activity {
 //        File filesDir = getFilesDir();
 //        System.out.println("路径:" + filesDir.getAbsolutePath());
 
-        File destFile = new File(getFilesDir(), dbName);// 要拷贝的目标地址,改地址在data/data/下应用包内
+        File destFile = new File(getFilesDir(), dbName);// 要拷贝的目标地址,该地址在data/data/下应用包内
         if (destFile.exists()) {
             System.out.println("数据库已存在");
             return;

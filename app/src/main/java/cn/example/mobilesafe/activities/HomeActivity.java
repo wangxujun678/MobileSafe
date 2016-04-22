@@ -49,6 +49,10 @@ public class HomeActivity extends Activity {
                     case 0:
                         showPasswordDialog();
                         break;
+                    case 1:
+                        //只拦截了短信，拦截电话还没完成
+                        startActivity(new Intent(HomeActivity.this,CallSafeActivity3.class));
+                        break;
                     case 7:
                         startActivity(new Intent(HomeActivity.this,AToolsActivity.class));
                         break;

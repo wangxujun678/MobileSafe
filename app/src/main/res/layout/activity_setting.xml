@@ -43,4 +43,14 @@
         android:layout_height="wrap_content"
         >
     </cn.example.mobilesafe.view.SettingClickView>
+
+    <cn.example.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_call_safe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        mobilesafe:title="黑名单启用设置"
+        mobilesafe:desc_on="黑名单拦截已开启"
+        mobilesafe:desc_off="黑名单拦截已关闭"
+        >
+    </cn.example.mobilesafe.view.SettingItemView>
 </LinearLayout>

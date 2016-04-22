@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import cn.example.mobilesafe.service.AddressService;
+import cn.example.mobilesafe.service.CallSafeService;
 import cn.example.mobilesafe.utils.serviceStatusUtils;
 import cn.example.mobilesafe.view.SettingClickView;
 import cn.example.mobilesafe.view.SettingItemView;
@@ -23,6 +24,7 @@ public class SettingActivity extends Activity {
     private SettingItemView sivAddress;
     private SettingClickView scvAddressStyle;
     private SettingClickView scvAddressLocation;
+    private SettingItemView sivCallSafe;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +36,7 @@ public class SettingActivity extends Activity {
         initAddressView();
         initAddressStyle();
         initAddressLocation();
+        initBlackNumber();
     }
 
     //初始化自动更新开关
@@ -93,6 +96,7 @@ public class SettingActivity extends Activity {
     private void initAddressStyle(){
         scvAddressStyle = (SettingClickView) findViewById(R.id.scv_address_style);
         scvAddressStyle.setTitle("归属地提示框风格");
+        scvAddressStyle.setDesc(items[mPref.getInt("address_style",0)]);
         scvAddressStyle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,6 +138,33 @@ public class SettingActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(SettingActivity.this,DragViewActivity.class));
+            }
+        });
+    }
+
+    /**
+     * 初始化黑名单拦截服务
+     */
+    private void initBlackNumber(){
+        sivCallSafe = (SettingItemView) findViewById(R.id.siv_call_safe);
+
+        boolean serviceRunning = serviceStatusUtils.isServiceRunning(SettingActivity.this,
+                "cn.example.mobilesafe.service.CallSafeService");
+        if (serviceRunning){
+            sivCallSafe.setChecked(true);
+        }else{
+            sivCallSafe.setChecked(false);
+        }
+        sivCallSafe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(sivCallSafe.isChecked()){
+                    sivCallSafe.setChecked(false);
+                    stopService(new Intent(SettingActivity.this, CallSafeService.class));// 停止黑名单拦截服务
+                }else{
+                    sivCallSafe.setChecked(true);
+                    startService(new Intent(SettingActivity.this, CallSafeService.class));// 开启黑名单拦截服务
+                }
             }
         });
     }
