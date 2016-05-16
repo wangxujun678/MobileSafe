@@ -94,6 +94,28 @@
             android:name=".TaskManagerSettingActivity"
             android:label="@string/title_activity_task_manager_setting" >
         </activity>
+        <!-- 桌面小部件的配置 -->
+        <receiver android:name="cn.example.mobilesafe.receiver.MyAppWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/my_appwidget_info" />
+        </receiver>
+        <receiver android:name="cn.example.mobilesafe.receiver.KillAllProcessReceiver" >
+            <intent-filter>
+                <action android:name="cn.example.mobilesafe.receiver.KillAllProcessReceiver" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="cn.example.mobilesafe.service.KillProcessWidgetService" />
+
+        <activity
+            android:name=".AntivirusActivity"
+            android:label="@string/title_activity_antivirus" >
+        </activity>
     </application>
 
 </manifest>

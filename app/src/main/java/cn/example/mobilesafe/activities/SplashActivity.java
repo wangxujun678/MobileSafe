@@ -99,6 +99,7 @@ public class SplashActivity extends Activity {
         rlRoot = (RelativeLayout) findViewById(R.id.rl_root);
 
         copyDB("address.db");// 拷贝归属地查询数据库
+        copyDB("antivirus.db");
 
         //判断是否需要自动更新
         mPref = getSharedPreferences("config", MODE_PRIVATE);
